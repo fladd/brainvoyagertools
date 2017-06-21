@@ -5,7 +5,7 @@ Create, read and write `.sdm` files.
 ## Usage examples
 
 **Build a design matrix from scratch:**
-```
+```python
 from brainvoyagertools import sdm
 
 design = sdm.DesignMatrix()
@@ -16,8 +16,8 @@ for p in design.predictors:
 design.save("design.sdm")
 ```
 
-**Add z-transformed motion regressors and their first and second derivatives:**
-```
+**Add z-transformed motion regressors, their first and second derivatives, and a constant:**
+```python
 from brainvoyagertools import sdm
 
 design = sdm.DesignMatrix("design.sdm")
