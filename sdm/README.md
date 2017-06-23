@@ -12,7 +12,7 @@ design = sdm.DesignMatrix()
 design.add_predictor(sdm.Predictor("FirstHalf", 100*[1] + 100*[0], colour=[255,0,0]))
 design.add_predictor(sdm.Predictor("SecondHalf", 100*[0] + 100*[1], colour=[0,255,0]))
 for p in design.predictors:
-    p.convolve_with_hrf(tr=2.0)
+    p.convolve_with_hrf(tr=2000)
 design.save("design.sdm")
 ```
 
