@@ -4,7 +4,7 @@ Create, read and write `.prt` files.
 
 ## Usage examples
 
-** Build a stimulation protocol from scratch:** 
+**Build a stimulation protocol from scratch:** 
 ```python
 from brainvoyagertools import prt
 
