@@ -23,7 +23,7 @@ class Predictor:
         ----------
         name : str
             the name of the predictor
-        data : str
+        data : list
             the data of the predictor
         colour : [int, int, int], optional
             the colour of the regressor;
@@ -91,11 +91,12 @@ class Predictor:
 
         Parameters
         ----------
-        tr : float
-            the repetition time in seconds
+        tr : int
+            the repetition time in milliseconds
 
         """
 
+        tr = float(tr) / 1000
         hrf_ = self._hrf(tr)
         self.data = np.convolve(self.data, self._hrf(tr))[0:len(self.data)]
 
@@ -130,31 +131,31 @@ class Predictor:
 class DesignMatrix:
     """A class representing a single-subject design matrix."""
 
-    def __init__(self, filename=None):
+    def __init__(self, load=None):
         """Create an design matrix object.
 
         Parameters
         ----------
-        filename : str, optional
-            the name of the .sdm file to load
+        load : str, optional
+            the name of a .sdm file to load
 
         """
 
         self.clear()
-        if filename is not None:
+        if load is not None:
             try:
-                self.oepn(filename, col_length=11)
+                self.load(load, col_length=11)
             except:
                 try:
-                    self.open(filename, col_length=12)
+                    self.load(load, col_length=12)
                 except:
-                    raise IOError("Could not read {0}!".format(filename))
+                    raise IOError("Could not read {0}!".format(load))
 
     def __repr__(self):
-        return "{0}{1}{2}{3}".format(self._format_header(),
-                                     self._format_colours(),
-                                     self._format_names(),
-                                     self.data)
+        return "{0}\n\n{1}\n{2}\n{3}".format(self._format_header(),
+                                             self._format_colours(),
+                                             self._format_names(),
+                                             self.data)
 
     @property
     def header(self):
@@ -184,18 +185,19 @@ class DesignMatrix:
     def _format_header(self):
         rtn = ""
         for c,x in enumerate(self.header):
-            rtn += "{0}:".format(x).ljust(25) + "{0}\n".format(self.header[x])
+            rtn += "{0}:".format(x).ljust(24) + "{0}".format(self.header[x])
+            if c < len(self.header) - 1:
+                rtn += "\n"
             if c == 0:
                 rtn += "\n"
-        rtn += "\n"
         return rtn
 
     def _format_colours(self):
         colours = ["{0} {1} {2}".format(x[0],x[1],x[2]) for x in self.colours]
-        return "   ".join(colours) + "\n"
+        return "   ".join(colours)
 
     def _format_names(self):
-        return '"' + '" "'.join(self.names) + '"\n'
+        return '"' + '" "'.join(self.names)
 
     def _format_data(self):
         rtn = ""
@@ -217,9 +219,6 @@ class DesignMatrix:
 
         """
 
-        if not isinstance(predictor, Predictor):
-            raise TypeError("Only Predictor objects can be added!")
-
         if self._header["NrOfPredictors"] > 0:
             if len(predictor.data) != self._header["NrOfDataPoints"]:
                 e = "Predictor has {0} data points, but design matrix has {1}!"
@@ -240,7 +239,7 @@ class DesignMatrix:
             self._header["FirstConfoundPredictor"] += 1
 
     def add_confound_predictor(self, predictor):
-        """Add a confound predictor.
+        """Add a confound predictor to the design matrix.
 
         Parameters
         ----------
@@ -267,8 +266,8 @@ class DesignMatrix:
                                    ("FirstConfoundPredictor", 0)])
         self._predictors = []
 
-    def open(self, filename, col_length=11):
-        """Open design matrix from a .sdm file.
+    def load(self, filename, col_length=11):
+        """Load design matrix from a .sdm file.
 
         This will overwrite current header and predictors!
 
@@ -292,8 +291,8 @@ class DesignMatrix:
         names = line.strip().strip('"').split('" "')
         colours = lines[counter-1].strip().split('   ')
         for line in lines[:counter-1]:
-            if line.strip() != "":
-                self._header[line[:25].strip(": ")] = int(line[25:].strip())
+            if line.strip():
+                self._header[line[:24].strip(": ")] = int(line[24:].strip())
         data = np.array([[float(line[i:i+col_length]) for i in range(0, len(line), col_length) if line[i]!="\n"]
                                        for line in lines[counter + 1:]])
         for x in range(len(names)):
@@ -313,7 +312,8 @@ class DesignMatrix:
             filename += ".sdm"
 
         with open(filename, 'w') as f:
-            f.write(self._format_header())
-            f.write(self._format_colours())
-            f.write(self._format_names())
+            f.write(self._format_header() + "\n")
+            f.write("\n")
+            f.write(self._format_colours() + "\n")
+            f.write(self._format_names() + "\n")
             f.write(self._format_data())

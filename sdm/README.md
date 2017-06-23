@@ -9,8 +9,8 @@ Create, read and write `.sdm` files.
 from brainvoyagertools import sdm
 
 design = sdm.DesignMatrix()
-design.add_predictor(sdm.Predictor("FirstHalf", 100*[1] + 100*[0], [255,0,0]))
-design.add_predictor(sdm.Predictor("SecondHalf", 100*[0] + 100*[1], [0,255,0]))
+design.add_predictor(sdm.Predictor("FirstHalf", 100*[1] + 100*[0], colour=[255,0,0]))
+design.add_predictor(sdm.Predictor("SecondHalf", 100*[0] + 100*[1], colour=[0,255,0]))
 for p in design.predictors:
     p.convolve_with_hrf(tr=2.0)
 design.save("design.sdm")
@@ -20,8 +20,8 @@ design.save("design.sdm")
 ```python
 from brainvoyagertools import sdm
 
-design = sdm.DesignMatrix("design.sdm")
-motion = sdm.DesignMatrix("3DMC.sdm")
+design = sdm.DesignMatrix(load="design.sdm")
+motion = sdm.DesignMatrix(load="3DMC.sdm")
 for p in motion.predictors:
     p.ztransform()
     design.add_confound_predictor(p)
