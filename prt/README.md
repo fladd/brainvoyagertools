@@ -16,6 +16,8 @@ protocol.save("MyExperiment.prt")
 
 **Change time units to milliseconds and add condition to other protocol:**
 ```python
+from brainvoyagertools import prt
+
 protocol = prt.StimulationProtocol(load="MyExperiment.prt")
 protocol.convert_to_msec(tr=2000)
 protocol2 = prt.StimulationProtocol(experiment_name="MyExperiment2", time_units="msec")
