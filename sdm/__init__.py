@@ -132,7 +132,7 @@ class DesignMatrix:
     """A class representing a single-subject design matrix."""
 
     def __init__(self, load=None):
-        """Create an design matrix object.
+        """Create a design matrix object.
 
         Parameters
         ----------
