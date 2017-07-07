@@ -33,7 +33,7 @@ class Study:
         self.data_files = data_files
         self.sdm_file = sdm_file
 
-    def __repr__(self):
+    def __str__(self):
         return "{0}\n{1}".format(self.data_files, repr(self.sdm_file))
 
 
@@ -54,7 +54,7 @@ class DesignMatrix:
         if load is not None:
             self.load(load)
 
-    def __repr__(self):
+    def __str__(self):
         return "{0}\n{1}".format(self._format_header(),
                                  self._format_studies())
 

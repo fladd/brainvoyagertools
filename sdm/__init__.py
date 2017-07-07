@@ -43,7 +43,7 @@ class Predictor:
                            random.randint(0, 255),
                            random.randint(0, 255)]
 
-    def __repr__(self):
+    def __str__(self):
         return "{0}\n{1}\n{2}\n{3}".format(self.colour, repr(self.name),
                                            repr(self.data), len(self.data))
 
@@ -151,7 +151,7 @@ class DesignMatrix:
                 except:
                     raise IOError("Could not read {0}!".format(load))
 
-    def __repr__(self):
+    def __str__(self):
         return "{0}\n\n{1}\n{2}\n{3}".format(self._format_header(),
                                              self._format_colours(),
                                              self._format_names(),
@@ -197,7 +197,7 @@ class DesignMatrix:
         return "   ".join(colours)
 
     def _format_names(self):
-        return '"' + '" "'.join(self.names)
+        return '"' + '" "'.join(self.names) + '"'
 
     def _format_data(self):
         rtn = ""
