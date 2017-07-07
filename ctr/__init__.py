@@ -17,7 +17,7 @@ class Contrast:
     """A class representing a Contrast object."""
 
     def __init__(self, name, data):
-        """Create a Cotrast object.
+        """Create a Contrast object.
 
         Parameters
         ----------
