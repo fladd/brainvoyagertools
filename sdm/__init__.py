@@ -253,7 +253,7 @@ class DesignMatrix:
     def add_constant(self):
         """Add constant."""
 
-        self.add_predictor(Predictor("Constant", len(self.data) * [0]), True)
+        self.add_predictor(Predictor("Constant", len(self.data) * [1]), True)
         self._header["IncludesConstant"] = 1
 
     def clear(self):
