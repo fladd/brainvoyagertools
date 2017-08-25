@@ -148,7 +148,7 @@ class ContrastsDefinition:
         for line in lines[:counter-1]:
             if line.strip():
                 self._header[line[:16].strip(": ")] = int(line[16:].strip())
-        data = np.array([[int(line[i:i+4]) for i in range(0, len(line), 4) if line[i]!="\n"]
+        data = np.array([[int(line[i:i+4]) for i in range(0, len(line), 4) if line[i].strip("\r\n")!=""]
                                        for line in lines[counter + 1:]])
         for x in range(len(names)):
             self._contrasts.append(Contrast(names[x], data[:,x]))
