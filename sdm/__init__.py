@@ -293,7 +293,7 @@ class DesignMatrix:
         for line in lines[:counter-1]:
             if line.strip():
                 self._header[line[:24].strip(": ")] = int(line[24:].strip())
-        data = np.array([[float(line[i:i+col_length]) for i in range(0, len(line), col_length) if line[i]!="\n"]
+        data = np.array([[float(line[i:i+col_length]) for i in range(0, len(line), col_length) if line[i].strip("\r\n")!=""]
                                        for line in lines[counter + 1:]])
         for x in range(len(names)):
             self._predictors.append(Predictor(names[x], data[:,x], colours[x]))
