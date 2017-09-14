@@ -133,7 +133,7 @@ class StimulationProtocol:
     def _format_conditions(self):
         rtn = ""
         for c, condition in enumerate(self.conditions):
-            rtn += repr(condition)
+            rtn += str(condition)
             if c < len(self.conditions) - 1:
                 rtn += "\n\n"
         return rtn
