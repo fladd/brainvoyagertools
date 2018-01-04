@@ -151,11 +151,11 @@ class StimulationProtocol:
         if condition.data.shape[1] > 2:
             self._header["FileVersion"] = 3
             self._header["ParametricWeights"] = 1
-            for condition in self.conditions:
-                if condition.data.shape[1] < 3:
-                    condition.data = np.append(
-                        condition.data,
-                        np.array([(condition.data.shape[0]) * [1]]).T,
+            for condition_ in self.conditions:
+                if condition_.data.shape[1] < 3:
+                    condition_.data = np.append(
+                        condition_.data,
+                        np.array([(condition_.data.shape[0]) * [1]]).T,
                         axis=1)
 
         else:
