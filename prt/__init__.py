@@ -51,8 +51,8 @@ class Condition:
     def __add__(self, other):
         name = self.name + "+" + other.name
         data = np.sort(np.concatenate((self.data, other.data)), axis=0)
-        data = [min(self.colour[0] + other.colour[0], 255,
-                min(self.colour[1] + other.colour[1], 255,
+        data = [min(self.colour[0] + other.colour[0], 255),
+                min(self.colour[1] + other.colour[1], 255),
                 min(self.colour[2] + other.colour[2], 255)]
 
         return Condition(name, data, colour)
