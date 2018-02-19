@@ -158,7 +158,6 @@ class StimulationProtocol:
                         condition_.data,
                         np.array([(condition_.data.shape[0]) * [1]]).T,
                         axis=1)
-
         else:
             if self._header["FileVersion"] == 3 and \
                self._header["ParametricWeights"] == 1:
