@@ -24,3 +24,13 @@ protocol2 = prt.StimulationProtocol(experiment_name="MyExperiment2", time_units=
 protocol2.add_condition(prt.conditions[-1])
 protocol2.save("MyExperiment2.prt")
 ```
+
+**Add combination of conditions into new protocol:**
+```python
+from brainvoyagertools import prt
+
+protocol = prt.StimulationProtocol(load="MyExperiment.prt")
+protocol2 = prt.StimulationProtocol(experiment_name="MyExperiment3"
+protocol2.add_condition(protocol.condition[0] + protocol.conditions[1])
+protocol2.save("MyExperiment3.prt")
+```
