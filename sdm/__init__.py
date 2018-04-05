@@ -232,9 +232,10 @@ class DesignMatrix:
             position = self._header["FirstConfoundPredictor"] - 1
         self._predictors.insert(position, predictor)
 
-        self._header["NrOfPredictors"] += 1
         if self._header["NrOfPredictors"] == 0:
-            self._header["NrOfDataPoints"] = len(predictors.data)
+            self._header["NrOfDataPoints"] = len(predictor.data)
+        self._header["NrOfPredictors"] += 1
+
         if not is_confound:
             self._header["FirstConfoundPredictor"] += 1
 
@@ -253,8 +254,62 @@ class DesignMatrix:
     def add_constant(self):
         """Add constant."""
 
-        self.add_predictor(Predictor("Constant", len(self.data) * [1]), True)
+        self.add_predictor(Predictor("Constant", len(self.data) * [1], [255,255,255]), True)
         self._header["IncludesConstant"] = 1
+
+    def define_predictors(self, protocol, data_points, tr):
+        """Define predictors from stimulation protocol.
+
+        Note: This does (for now) only create demeaned parametric predictors!
+
+        Parameters
+        ----------
+        protocol : brainvoyagertools.prt.StimulationProtocol
+            the protocol do define predictors from
+        data_points : int
+            the number of data points per predictor
+        tr : int or None
+            the TR for convolving with HRF; no convolution if None
+
+        """
+
+        if protocol.time_units != "Volumes":
+            raise NotImplementedError(
+                "Currently only protocols with time unit 'Volumes' supported!")
+
+        for condition in protocol.conditions:
+            # main effect
+            mod = False
+            parameters = []
+            data = data_points * [0]
+            for event in condition.data:
+                if protocol.header["ParametricWeights"] == 1:
+                    parameters.append(event[2])
+                    if event[2] != 1:
+                        mod = True
+                for x in range(event[0]-1, event[1]):
+                    data[x] = 1
+            if mod:
+                predictor = Predictor(condition.name + " [Main]", data,
+                                      condition.colour)
+            else:
+                predictor = Predictor(condition.name, data, condition.colour)
+            if tr is not None:
+                predictor.convolve_with_hrf(tr)
+            self.add_predictor(predictor)
+
+            # parametric effect
+            if mod:
+                mean = np.mean(list(set(parameters)))
+                mod_data = data_points * [0]
+                for event in condition.data:
+                    for x in range(event[0]-1, event[1]):
+                        mod_data[x] = event[2] - mean
+                predictor = Predictor(condition.name + " [Parametric]", mod_data,
+                                      condition.colour)
+                if tr is not None:
+                    predictor.convolve_with_hrf(tr)
+                self.add_predictor(predictor)
 
     def clear(self):
         """Clear design matrix."""
@@ -263,7 +318,7 @@ class DesignMatrix:
                                    ("NrOfPredictors", 0),
                                    ("NrOfDataPoints", 0),
                                    ("IncludesConstant", 0),
-                                   ("FirstConfoundPredictor", 0)])
+                                   ("FirstConfoundPredictor", 1)])
         self._predictors = []
 
     def load(self, filename, col_length=11):

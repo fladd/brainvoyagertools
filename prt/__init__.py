@@ -31,7 +31,7 @@ class Condition:
         """
 
         self.name = name
-        self.data = np.array(data)
+        self.data = np.array(data, dtype=object)
         if colour is not None:
             if isinstance(colour, str):
                 self.colour = [int(x) for x in colour.split(" ") if x != '']
@@ -47,7 +47,7 @@ class Condition:
                                            len(self.data),
                                            self._format_data(),
                                            self._format_colour())
-    
+
     def __add__(self, other):
         name = self.name + "+" + other.name
         data = np.sort(np.concatenate((self.data, other.data)), axis=0)
@@ -56,7 +56,7 @@ class Condition:
                  min(self.colour[2] + other.colour[2], 255)]
 
         return Condition(name, data, colour)
-                    
+
     def _format_data(self):
         rtn = ""
         max = 0
@@ -242,6 +242,12 @@ class StimulationProtocol:
                         value = value[0]
                 self._header[line[:20].strip(": ")] = value
 
+        def int_or_float(x):
+            try:
+                return int(x)
+            except:
+                return float(x)
+
         idx = counter
         for line in lines[counter+1:]:
             idx += 1
@@ -252,7 +258,7 @@ class StimulationProtocol:
                     end = start + int(lines[idx+2])
                     data = []
                     for x in range(start, end):
-                        data.append([int(i) for i in lines[x].split(" ") if i])
+                        data.append([int_or_float(i) for i in lines[x].split(" ") if i])
                     colour = [int(x) for x in lines[end][7:].split(" ")]
                     self.add_condition(Condition(name, data, colour))
                 except IndexError:

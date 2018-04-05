@@ -31,3 +31,14 @@ design.add_constant()
 design.save("design_and_motion.sdm")
 ```
 
+**Define predictors from a prt file:**
+```python
+from brainvoyagertools import prt, sdm
+
+protocol = prt.StimulationProtocol(load="protocol.prt")
+design = sdm.DesignMatrix()
+design.define_predictors(protocol, data_points=400, tr=2000)
+design.add_constant()
+design.save("design.sdm")
+```
+
