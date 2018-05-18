@@ -8,6 +8,7 @@ __author__ = "Florian Krause <siebenhundertzehn@gmail.com>"
 import os
 import random
 from collections import OrderedDict
+from itertools import groupby
 
 import numpy as np
 
@@ -227,6 +228,7 @@ class StimulationProtocol:
 
         with open(filename) as f:
             lines = f.readlines()
+        lines = [x[0] for x in groupby(lines)]
         for counter, line in enumerate(lines):
             if line.startswith('NrOfConditions'):
                 break
