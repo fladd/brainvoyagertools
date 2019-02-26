@@ -142,6 +142,7 @@ class DesignMatrix:
                     "Data is VTC, but design matrix contains MTC data!")
 
         self._header["NrOfStudies"] += 1
+        self._studies.append(study)
 
     def clear(self):
         """Clear design matrix."""
