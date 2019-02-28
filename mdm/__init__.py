@@ -114,7 +114,7 @@ class DesignMatrix:
         rtn = ""
         for c,x in enumerate(self.studies):
             rtn += '"' + '" "'.join(x.data_files) + '" "' +  x.sdm_file + '"'
-            if c < len(self.header) - 1:
+            if c < self.header["NrOfStudies"] - 1:
                 rtn += "\n"
         return rtn
 
