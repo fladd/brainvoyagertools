@@ -57,7 +57,7 @@ class Condition:
                  min(self.colour[2] + other.colour[2], 255)]
 
         return Condition(name, data, colour)
-
+    
     def _format_data(self):
         rtn = ""
         max = 0
@@ -123,6 +123,38 @@ class StimulationProtocol:
     @property
     def experiment_name(self):
         return self._header["Experiment"]
+    
+    @property
+    def event_list(self):
+        events = []
+        for condition in self.conditions:
+            for intervall in condition.data:
+                event = [condition.name]
+                event.extend(intervall)
+                events.append(event)
+        return sorted(events, key=lambda x: x[1])
+    
+    @property
+    def event_names(self):
+        return [x[0] for x in self.event_list]
+
+    @property
+    def event_onsets(self):
+        return [x[1] for x in self.event_list]
+
+    @property
+    def event_durations(self):
+        if self.time_units == "msec":
+            return [x[2] - x[1] for x in self.event_list]
+        else:
+            return [x[2] - x[1] + 1 for x in self.event_list]
+        
+    @property
+    def event_weights(self):
+        try:
+            return [x[3] for x in self.event_list]
+        except IndexError:
+            return [1 for x in self.event_list]
 
     def _format_header(self):
         rtn = ""
