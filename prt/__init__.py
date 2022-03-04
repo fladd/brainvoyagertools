@@ -123,7 +123,7 @@ class StimulationProtocol:
     @property
     def experiment_name(self):
         return self._header["Experiment"]
-    
+
     @property
     def event_list(self):
         events = []
@@ -133,7 +133,7 @@ class StimulationProtocol:
                 event.extend(intervall)
                 events.append(event)
         return sorted(events, key=lambda x: x[1])
-    
+
     @property
     def event_names(self):
         return [x[0] for x in self.event_list]
@@ -148,7 +148,7 @@ class StimulationProtocol:
             return [x[2] - x[1] for x in self.event_list]
         else:
             return [x[2] - x[1] + 1 for x in self.event_list]
-        
+
     @property
     def event_weights(self):
         try:
@@ -268,11 +268,14 @@ class StimulationProtocol:
             if line.strip() != "":
                 value = line[20:].strip().split(" ")
                 if len(value) > 1:
-                    value = [int(x) for x in value]
+                    try:
+                        value = [int(x) for x in value]
+                    except ValueError:
+                        value = " ".join(value)
                 else:
                     try:
                         value = int(value[0])
-                    except:
+                    except ValueError:
                         value = value[0]
                 self._header[line[:20].strip(": ")] = value
 
