@@ -2,7 +2,7 @@
 
 """
 
-__author__ = "Florian Krause <siebenhundertzehn@gmail.com>"
+__author__ = "Florian Krause <me@floriankrause.org>"
 
 
 import os
