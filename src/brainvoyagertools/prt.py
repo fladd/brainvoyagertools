@@ -260,13 +260,13 @@ class StimulationProtocol:
 
         with open(filename) as f:
             lines = f.readlines()
-        lines = [x[0] for x in groupby(lines)]
+        lines = [x[0].replace("\t", "  ").strip() for x in groupby(lines)]
         for counter, line in enumerate(lines):
             if line.startswith('NrOfConditions'):
                 break
         for line in lines[:counter]:
             if line.strip() != "":
-                value = line[20:].strip().split(" ")
+                value = line.split(":", 1)[1].strip().split(" ")
                 if len(value) > 1:
                     try:
                         value = [int(x) for x in value]
@@ -277,7 +277,7 @@ class StimulationProtocol:
                         value = int(value[0])
                     except ValueError:
                         value = value[0]
-                self._header[line[:20].strip(": ")] = value
+                self._header[line.split(":", 1)[0].strip()] = value
 
         def int_or_float(x):
             try:
