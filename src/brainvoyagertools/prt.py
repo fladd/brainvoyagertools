@@ -156,6 +156,28 @@ class StimulationProtocol:
         except IndexError:
             return [1 for x in self.event_list]
 
+    @property
+    def condition_names(self):
+        return [c.name for c in self.conditions]
+
+    @property
+    def condition_onsets(self):
+        return [c.data[:,0] for c in self.conditions]
+
+    @property
+    def condition_durations(self):
+        if self.time_units == "msec":
+            return [c.data[:,1] - c.data[:,0] for c in self.conditions]
+        else:
+            return [c.data[:,1] - c.data[:,0] + 1 for c in self.conditions]
+
+    @property
+    def condition_weights(self):
+        try:
+            return [c.data[:,2] for c in self.conditions]
+        except IndexError:
+            return [np.array([1] * len(c.data)) for c in self.conditions]
+
     def _format_header(self):
         rtn = ""
         for c,x in enumerate(self.header):
