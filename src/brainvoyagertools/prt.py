@@ -283,45 +283,46 @@ class StimulationProtocol:
         with open(filename) as f:
             lines = f.readlines()
         lines = [x[0].replace("\t", "  ").strip() for x in groupby(lines)]
+        lines = [line for line in lines if line.strip() != ""]
         for counter, line in enumerate(lines):
             if line.startswith('NrOfConditions'):
                 break
         for line in lines[:counter]:
-            if line.strip() != "":
-                value = line.split(":", 1)[1].strip().split(" ")
-                if len(value) > 1:
-                    try:
-                        value = [int(x) for x in value]
-                    except ValueError:
-                        value = " ".join(value)
-                else:
-                    try:
-                        value = int(value[0])
-                    except ValueError:
-                        value = value[0]
-                self._header[line.split(":", 1)[0].strip()] = value
-
+            value = line.split(":", 1)[1].strip().split(" ")
+            if len(value) > 1:
+                try:
+                    value = [int(x) for x in value]
+                except ValueError:
+                    value = " ".join(value)
+            else:
+                try:
+                    value = int(value[0])
+                except ValueError:
+                    value = value[0]
+            self._header[line.split(":", 1)[0].strip()] = value
+                
         def int_or_float(x):
             try:
                 return int(x)
             except:
                 return float(x)
-
-        idx = counter
-        for line in lines[counter+1:]:
-            idx += 1
-            if not line.strip():
-                try:
-                    name = lines[idx+1].strip()
-                    start = idx + 3
-                    end = start + int(lines[idx+2])
-                    data = []
-                    for x in range(start, end):
-                        data.append([int_or_float(i) for i in lines[x].split(" ") if i])
-                    colour = [int(x) for x in lines[end][7:].split(" ")]
-                    self.add_condition(Condition(name, data, colour))
-                except IndexError:
-                    pass
+        
+        conds = conds = int(lines[counter].split(":", 1)[1].strip())
+        counter = counter+1
+        for i in range(conds):
+            try:
+                name = lines[counter].strip()
+                start = counter + 2
+                number_events = int(lines[counter+1])
+                end = start + number_events
+                data = []
+                for x in range(start, end):
+                    data.append([int_or_float(i) for i in lines[x].split(" ") if i])
+                colour = [int(x) for x in lines[end][7:].split(" ")]
+                self.add_condition(Condition(name, data, colour))
+            except IndexError:
+                pass
+            counter = counter + number_events + 3
 
     def save(self, filename):
         """Save stimulation protocol to a .prt file.
