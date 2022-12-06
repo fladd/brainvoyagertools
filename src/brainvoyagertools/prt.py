@@ -280,6 +280,7 @@ class StimulationProtocol:
 
         """
 
+        
         with open(filename) as f:
             lines = f.readlines()
         lines = [x[0].replace("\t", "  ").strip() for x in groupby(lines)]
@@ -300,13 +301,13 @@ class StimulationProtocol:
                 except ValueError:
                     value = value[0]
             self._header[line.split(":", 1)[0].strip()] = value
-                
+
         def int_or_float(x):
             try:
                 return int(x)
             except:
                 return float(x)
-        
+
         conds = conds = int(lines[counter].split(":", 1)[1].strip())
         counter = counter+1
         for i in range(conds):
