@@ -301,7 +301,7 @@ class StimulationProtocol:
                 except ValueError:
                     value = value[0]
             self._header[line.split(":", 1)[0].strip()] = value
-               
+
         def int_or_float(x):
             try:
                 return int(x)
